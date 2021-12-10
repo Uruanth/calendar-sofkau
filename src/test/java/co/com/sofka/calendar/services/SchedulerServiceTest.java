@@ -62,15 +62,35 @@ class SchedulerServiceTest {
         Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
 
         StepVerifier.create(response)
-              //  .expectNextCount(6)
                 .expectNextMatches(programDate -> {
-                   return programDate.getDate().toString().equals("2022-01-03")
+                    System.out.println(programDate);
+                    return programDate.getDate().toString().equals("2022-01-03")
                             && programDate.getCategoryName().equals("Principios");
                 })
-                .expe
+                .expectNextMatches(programDate -> {
+                    return programDate.getDate().toString().equals("2022-01-04")
+                            && programDate.getCategoryName().equals("Bases");
+                })
+                .expectNextMatches(programDate -> {
+                    return programDate.getDate().toString().equals("2022-01-05")
+                            && programDate.getCategoryName().equals("Bases");
+                })
+                .expectNextMatches(programDate -> {
+                    return programDate.getDate().toString().equals("2022-01-06")
+                            && programDate.getCategoryName().equals("Fundamentos");
+                })
+                .expectNextMatches(programDate -> {
+                    return programDate.getDate().toString().equals("2022-01-07")
+                            && programDate.getCategoryName().equals("Fundamentos");
+                })
+                .expectNextMatches(programDate -> {
+                    return programDate.getDate().toString().equals("2022-01-10")
+                            && programDate.getCategoryName().equals("Fundamentos");
+                })
                 .verifyComplete();
 
-
+        StepVerifier.create(response)
+                .expectNextCount(6);
 
 
         // Assertions.assertEquals(13, response.size());//TODO: hacer de otro modo
