@@ -30,7 +30,6 @@ class SchedulerServiceTest {
     @Mock
     ProgramRepository repository;
 
-/*
     @Test
         //TODO: modificar el test para que el act sea reactivo, usando stepverifier
     void generateCalendar() {
@@ -40,30 +39,18 @@ class SchedulerServiceTest {
         Program program = getProgramDummy();
 
         Mockito.when(repository.findById(programId)).thenReturn(Mono.just(program));
+
         //TODO: hacer una subscripción de el servicio reactivo
         Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
-
-       // Assertions.assertEquals(13, response.size());//TODO: hacer de otro modo
-        Assertions.assertEquals(getSnapResult(), new Gson().toJson(response));//TODO: hacer de otro modo
         Mockito.verify(repository).findById(programId);
-    }
-    */
 
-    @Test
-        //TODO: modificar el test para que el act sea reactivo, usando stepverifier
-    void generateCalendar() {
-        var programId = "xxxx";
-        var startDate = LocalDate.of(2022, 1, 1);
+        StepVerifier.create(response)
+                .expectNextCount(6)
+                .expectComplete();
 
-        Program program = getProgramDummy();
-
-        Mockito.when(repository.findById(programId)).thenReturn(Mono.just(program));
-        //TODO: hacer una subscripción de el servicio reactivo
-        Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
 
         StepVerifier.create(response)
                 .expectNextMatches(programDate -> {
-                    System.out.println(programDate);
                     return programDate.getDate().toString().equals("2022-01-03")
                             && programDate.getCategoryName().equals("Principios");
                 })
@@ -87,18 +74,11 @@ class SchedulerServiceTest {
                     return programDate.getDate().toString().equals("2022-01-10")
                             && programDate.getCategoryName().equals("Fundamentos");
                 })
+
                 .verifyComplete();
 
-        StepVerifier.create(response)
-                .expectNextCount(6);
-
-
-        // Assertions.assertEquals(13, response.size());//TODO: hacer de otro modo
-        //Assertions.assertEquals(getSnapResult(), new Gson().toJson(response));//TODO: hacer de otro modo
-        Mockito.verify(repository).findById(programId);
     }
-
-
+    
     @Test
     void programNoFound() {
         var programId = "xxxx";
@@ -106,12 +86,12 @@ class SchedulerServiceTest {
 
         Mockito.when(repository.findById(programId)).thenReturn(Mono.empty());
 
-        //TODO: hacer de otro modo
-        var exception = Assertions.assertThrows(RuntimeException.class, () -> {
-            schedulerService.generateCalendar(programId, startDate);//TODO: hacer una subscripción de el servicio reactivo
+        Flux<ProgramDate> response = schedulerService.generateCalendar(programId, startDate);
 
-        });
-        Assertions.assertEquals("El programa academnico no existe", exception.getMessage());//TODO: hacer de otro modo
+        StepVerifier.create(response)
+                .expectErrorMessage("Objeto vacio")
+                .verify();
+
         Mockito.verify(repository).findById(programId);
 
     }
