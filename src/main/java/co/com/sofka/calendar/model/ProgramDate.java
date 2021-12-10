@@ -20,4 +20,5 @@ public final class ProgramDate {
     public String getCategoryName() {
         return categoryName;
     }
+
 }
