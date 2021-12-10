@@ -2,6 +2,7 @@ package co.com.sofka.calendar.services;
 
 import co.com.sofka.calendar.collections.Program;
 import co.com.sofka.calendar.model.ProgramDate;
+import co.com.sofka.calendar.repositories.ProgramDateRepository;
 import co.com.sofka.calendar.repositories.ProgramRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,8 @@ public class SchedulerService {
 
     @Autowired
     private ProgramRepository programRepository;
+
+
 
 
     public Flux<ProgramDate> generateCalendar(String programId, LocalDate startDate) {
@@ -60,5 +63,9 @@ public class SchedulerService {
                 .flatMap(courseTime -> courseTime.getCategories().stream())
                 .flatMap(time -> IntStream.range(0, time.getDays()).mapToObj(i -> time.getCategoryName()));
     }
+
+
+
+
 
 }
