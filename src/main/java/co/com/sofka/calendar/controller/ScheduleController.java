@@ -22,6 +22,7 @@ public class ScheduleController {
     @Autowired
     ProgramDateService programDateService;
 
+
     @GetMapping("/generate/{date}/{id}")
     public Flux<ProgramDate> generateCalendar(@PathVariable("date") String date, @PathVariable("id") String id) {
 
@@ -31,10 +32,12 @@ public class ScheduleController {
         LocalDate localDate = LocalDate.parse(date, formatter);
         Flux<ProgramDate> generado = schedulerService.generateCalendar(id, localDate);
 
-        programDateService.save(generado);
-        return generado;
+        return programDateService.saveAll(generado);
 
     }
 
-
+    @GetMapping("/programas")
+    public Flux<ProgramDate> programas() {
+        return programDateService.getAll();
+    }
 }
